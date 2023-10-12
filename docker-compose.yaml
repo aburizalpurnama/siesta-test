@@ -1,0 +1,44 @@
+version: "3.7"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: siesta-app:1.0
+    container_name: siesta-app
+    environment:
+      - APP_PORT=8081
+    networks:
+      - test-net
+    depends_on:
+      db:
+        condition: service_healthy
+        restart: true
+  db:
+    container_name: siesta-db
+    image: postgres:13
+    ports:
+      - '5435:5432'
+    volumes:
+      - test-db:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: siesta
+    networks:
+      - test-net
+    healthcheck:
+      test: ["CMD-SHELL", "sh -c 'pg_isready -U admin -d siesta'"]
+      interval: 10s
+      timeout: 60s
+      retries: 5
+      start_period: 5s  
+
+volumes:
+  test-db:
+    driver: local
+
+networks:
+  test-net:
+    driver: bridge
