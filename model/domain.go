@@ -51,11 +51,12 @@ type (
 
 	LendingType struct {
 		gorm.Model
-		Name            string  `gorm:"not null"`
-		MonthlyInterest float64 `gorm:"not null"`
-		AdminFee        float64 `gorm:"not null"`
-		StampDutyFee    int64   `gorm:"not null"`
-		IsActive        bool    `gorm:"not null"`
+		Name             string  `gorm:"not null"`
+		MonthlyInterest  float64 `gorm:"not null"`
+		AdminFee         float64 `gorm:"not null"`
+		StampDutyFee     int64   `gorm:"not null"`
+		MinLoanStampDuty int64   `gorm:"not null"`
+		IsActive         bool    `gorm:"not null"`
 
 		Lendings []Lending
 	}
