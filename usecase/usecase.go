@@ -5,6 +5,7 @@ import (
 
 	"github.com/aburizalpurnama/siesta-test/model"
 	"github.com/aburizalpurnama/siesta-test/repository"
+	"github.com/jinzhu/copier"
 )
 
 const (
@@ -20,6 +21,7 @@ type (
 	MbtUsecase interface {
 		CreateSimulation(reqData model.CreateSimulationRequest) (respData model.CreateSimulationResponse, err error)
 		ApproveLending(reqData model.ApproveLendingRequest) error
+		SelectRepayments(reqData model.SelectRepaymentsRequest) ([]model.SelectRepaymentsResponse, error)
 	}
 
 	MbtUsecaseImpl struct {
@@ -134,4 +136,16 @@ func (u *MbtUsecaseImpl) ApproveLending(reqData model.ApproveLendingRequest) err
 	lending.Status = APPROVED
 
 	return u.mbtRepo.UpdateLendingStatus(lending)
+}
+
+func (u *MbtUsecaseImpl) SelectRepayments(reqData model.SelectRepaymentsRequest) ([]model.SelectRepaymentsResponse, error) {
+	repayments, err := u.mbtRepo.SelectRepaymentsByAccountId(reqData.AccountId)
+	if err != nil {
+		return nil, err
+	}
+
+	var repaymentRespons []model.SelectRepaymentsResponse
+	err = copier.Copy(&repaymentRespons, &repayments)
+
+	return repaymentRespons, err
 }

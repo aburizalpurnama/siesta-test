@@ -16,4 +16,8 @@ type (
 	ApproveLendingRequest struct {
 		LendingId uint `json:"lendingId"`
 	}
+
+	SelectRepaymentsRequest struct {
+		AccountId uint `json:"accountId"`
+	}
 )

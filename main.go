@@ -37,6 +37,7 @@ func main() {
 
 	v1.Post("/accounts/:accountId/lendings", handler.CreateSimulation)
 	v1.Post("/lendings/:lendingId/approvals", handler.ApproveLending)
+	v1.Get("/accounts/:accountId/repayments", handler.SelectRepayments)
 
 	log.Fatal(app.Listen(fmt.Sprintf(":%d", config.Server.Port)))
 }

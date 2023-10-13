@@ -1,0 +1,57 @@
+{
+	"info": {
+		"_postman_id": "aa0694f1-f743-4978-a276-b68dd8c9eefb",
+		"name": "Siesta",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Simulate Lending",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"withdrawalType\": \"CASH\",\n    \"userId\": 1,\n    \"lendingTypeId\": 1,\n    \"amount\": 6000000,\n    \"purpose\": \"buy new iphone\",\n    \"tenor\" : 3\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8081/api/v1/lendings",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"api",
+						"v1",
+						"lendings"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Approve Lending",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": null
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Repayments",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": null
+			},
+			"response": []
+		}
+	]
+}

@@ -19,9 +19,9 @@ func TestGetLendingType(t *testing.T) {
 		log.Fatalf("Error connect to db, %s", err)
 	}
 
-	
 	repo := NewMbtRepo(db)
-	lt, _ := repo.GetLendingTypeById(1)
-	fmt.Printf("lt: %v\n", lt)
+	r, err := repo.SelectRepaymentsByAccountId(1)
+	fmt.Printf("r: %v\n", r)
+	fmt.Printf("err: %v\n", err)
 
 }

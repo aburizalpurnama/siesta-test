@@ -9,6 +9,8 @@ services:
     container_name: siesta-app
     environment:
       - APP_PORT=8081
+    ports:
+      - '8081:8081'
     networks:
       - test-net
     depends_on:

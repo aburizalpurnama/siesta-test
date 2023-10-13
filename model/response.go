@@ -24,6 +24,16 @@ type (
 		DueDate time.Time `json:"dueDate"`
 	}
 
+	SelectRepaymentsResponse struct {
+		DueDate      time.Time `json:"dueDate"`
+		AdminFee     int64     `json:"AdminFee"`
+		StampDutyFee int64     `json:"StampDutyFee"`
+		Interest     int64     `json:"Interest"`
+		Principal    int64     `json:"Principal"`
+		Bill         int64     `json:"Bill"`
+		Outstanding  int64     `json:"Outstanding"`
+	}
+
 	ErrorResponse struct {
 		Error string `json:"error"`
 	}

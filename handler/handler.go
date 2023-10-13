@@ -14,6 +14,7 @@ type (
 	MbtHandler interface {
 		CreateSimulation(c *fiber.Ctx) error
 		ApproveLending(c *fiber.Ctx) error
+		SelectRepayments(c *fiber.Ctx) error
 	}
 
 	MbtHandlerImpl struct {
@@ -62,6 +63,22 @@ func (h *MbtHandlerImpl) ApproveLending(c *fiber.Ctx) error {
 		return err
 	}
 
+	c.SendStatus(fiber.StatusOK)
+	return nil
+}
+
+func (h *MbtHandlerImpl) SelectRepayments(c *fiber.Ctx) error {
+	accountId := c.Params("accountId")
+	accId, _ := strconv.Atoi(accountId)
+
+	reqData := model.SelectRepaymentsRequest{AccountId: uint(accId)}
+	respData, err := h.mbtUsecase.SelectRepayments(reqData)
+	if err != nil {
+		c.SendStatus(fiber.ErrInternalServerError.Code)
+		return err
+	}
+
+	c.JSON(respData)
 	c.SendStatus(fiber.StatusOK)
 	return nil
 }

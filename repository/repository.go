@@ -14,6 +14,7 @@ type (
 		CreateLending(data model.Lending) (uint, error)
 		GetLendingById(id uint) (model.Lending, error)
 		UpdateLendingStatus(data model.Lending) error
+		SelectRepaymentsByAccountId(id uint) ([]model.Repayment, error)
 	}
 
 	MbtRepositoryImpl struct {
@@ -23,6 +24,17 @@ type (
 
 func NewMbtRepo(db *gorm.DB) MbtRepository {
 	return &MbtRepositoryImpl{db}
+}
+
+func (r *MbtRepositoryImpl) SelectRepaymentsByAccountId(id uint) ([]model.Repayment, error) {
+	sql := `SELECT r.* FROM repayments r JOIN lendings l ON r.lending_id = l.id WHERE l.account_id = ? ORDER BY date_part('year', r.due_date), date_part('month', r.due_date) ASC;`
+	repayments := []model.Repayment{}
+	err := r.db.Raw(sql, id).Scan(&repayments).Error
+	if err != nil {
+		log.Info(err)
+	}
+
+	return repayments, err
 }
 
 func (r *MbtRepositoryImpl) GetLendingById(id uint) (model.Lending, error) {
