@@ -12,6 +12,8 @@ type (
 		GetAccountById(id uint) (model.Account, error)
 		CreateRepayment(data model.Repayment) (uint, error)
 		CreateLending(data model.Lending) (uint, error)
+		GetLendingById(id uint) (model.Lending, error)
+		UpdateLendingStatus(data model.Lending) error
 	}
 
 	MbtRepositoryImpl struct {
@@ -21,6 +23,25 @@ type (
 
 func NewMbtRepo(db *gorm.DB) MbtRepository {
 	return &MbtRepositoryImpl{db}
+}
+
+func (r *MbtRepositoryImpl) GetLendingById(id uint) (model.Lending, error) {
+	data := model.Lending{}
+	err := r.db.First(&data, id).Error
+	if err != nil {
+		log.Info(err)
+	}
+
+	return data, err
+}
+
+func (r *MbtRepositoryImpl) UpdateLendingStatus(data model.Lending) error {
+	err := r.db.Model(&data).Update("status", data.Status).Error
+	if err != nil {
+		log.Info(err)
+	}
+
+	return err
 }
 
 func (r *MbtRepositoryImpl) GetLendingTypeById(id uint) (model.LendingType, error) {

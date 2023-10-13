@@ -13,6 +13,7 @@ import (
 type (
 	MbtHandler interface {
 		CreateSimulation(c *fiber.Ctx) error
+		ApproveLending(c *fiber.Ctx) error
 	}
 
 	MbtHandlerImpl struct {
@@ -46,6 +47,21 @@ func (h *MbtHandlerImpl) CreateSimulation(c *fiber.Ctx) error {
 	}
 
 	c.JSON(respPayload)
+	c.SendStatus(fiber.StatusOK)
+	return nil
+}
+
+func (h *MbtHandlerImpl) ApproveLending(c *fiber.Ctx) error {
+	lendingId := c.Params("lendingId")
+	lenId, _ := strconv.Atoi(lendingId)
+
+	reqData := model.ApproveLendingRequest{LendingId: uint(lenId)}
+	err := h.mbtUsecase.ApproveLending(reqData)
+	if err != nil {
+		c.SendStatus(fiber.ErrInternalServerError.Code)
+		return err
+	}
+
 	c.SendStatus(fiber.StatusOK)
 	return nil
 }

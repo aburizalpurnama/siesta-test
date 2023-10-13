@@ -9,7 +9,8 @@ import (
 
 const (
 	INITIATED = "INITIATED"
-	ON_GOING  = "ON_GOING"
+	APPROVED  = "APPROVED"
+	REJECTED  = "REJECTED"
 	PAID_OFF  = "PAID_OFF"
 	ABORTED   = "ABORTED"
 	LATE      = "LATE"
@@ -18,6 +19,7 @@ const (
 type (
 	MbtUsecase interface {
 		CreateSimulation(reqData model.CreateSimulationRequest) (respData model.CreateSimulationResponse, err error)
+		ApproveLending(reqData model.ApproveLendingRequest) error
 	}
 
 	MbtUsecaseImpl struct {
@@ -30,7 +32,6 @@ func NewMbtUsecase(repo repository.MbtRepository) MbtUsecase {
 }
 
 func (u *MbtUsecaseImpl) CreateSimulation(reqData model.CreateSimulationRequest) (respData model.CreateSimulationResponse, err error) {
-	// get lending type by id
 	lendingType, err := u.mbtRepo.GetLendingTypeById(reqData.LendingTypeId)
 	if err != nil {
 		return
@@ -40,7 +41,6 @@ func (u *MbtUsecaseImpl) CreateSimulation(reqData model.CreateSimulationRequest)
 	adminFee := int64(float64(reqData.Amount) * (lendingType.AdminFee / 100))
 	principalPerMonth := int64(reqData.Amount / int64(reqData.Tenor))
 
-	// create lendings
 	lending := model.Lending{
 		Date:              reqData.Date,
 		Amount:            reqData.Amount,
@@ -62,7 +62,6 @@ func (u *MbtUsecaseImpl) CreateSimulation(reqData model.CreateSimulationRequest)
 		return
 	}
 
-	// cek limit yang terpakai untuk dapetin akumulasi pinjaman dan bandingkan dengan ketentuan stampFee
 	account, err := u.mbtRepo.GetAccountById(reqData.AccountId)
 	if err != nil {
 		return
@@ -121,6 +120,18 @@ func (u *MbtUsecaseImpl) CreateSimulation(reqData model.CreateSimulationRequest)
 	respData.Total = totalBill
 
 	respData.Repayments = repayments
+	respData.LendingId = lendingId
 
 	return
+}
+
+func (u *MbtUsecaseImpl) ApproveLending(reqData model.ApproveLendingRequest) error {
+	lending, err := u.mbtRepo.GetLendingById(reqData.LendingId)
+	if err != nil {
+		return err
+	}
+
+	lending.Status = APPROVED
+
+	return u.mbtRepo.UpdateLendingStatus(lending)
 }

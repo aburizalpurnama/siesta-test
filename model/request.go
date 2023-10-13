@@ -12,4 +12,8 @@ type (
 		Tenor          int       `json:"tenor"`
 		Date           time.Time `json:"date"`
 	}
+
+	ApproveLendingRequest struct {
+		LendingId uint `json:"lendingId"`
+	}
 )

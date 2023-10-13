@@ -14,6 +14,7 @@ type (
 		AdminFee        int64     `json:"adminFee"`
 		StampDutyFee    int64     `json:"stampDutyFee"`
 		Total           int64     `json:"total"`
+		LendingId       uint      `json:"lendingId"`
 
 		Repayments []RepaymentResponse `json:"repayments"`
 	}
